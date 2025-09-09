@@ -1,0 +1,243 @@
+/* Button Component - Ichiraku's Events */
+
+.ichiraku-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  text-decoration: none;
+
+  border: var(--border-width) solid transparent;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+
+  /* Efecto sutil de chakra */
+  background-clip: padding-box;
+}
+
+.ichiraku-button:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.ichiraku-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Efecto de onda chakra al hacer hover */
+.ichiraku-button:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: 0;
+}
+
+.ichiraku-button:hover:before {
+  width: 300px;
+  height: 300px;
+}
+
+.ichiraku-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Tamaños */
+.ichiraku-button--sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  gap: var(--spacing-xs);
+}
+
+.ichiraku-button--md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-xs);
+}
+
+.ichiraku-button--lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-base);
+  gap: var(--spacing-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Variantes de color */
+
+/* Primary - Naruto Orange */
+.ichiraku-button--primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-hover) 100%
+  );
+  color: var(--text-primary);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.ichiraku-button--primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, #e8b571 100%);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.ichiraku-button--primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Secondary - Naruto Blue */
+.ichiraku-button--secondary {
+  background: linear-gradient(135deg, var(--secondary) 0%, #a1c4e8 100%);
+  color: var(--text-primary);
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.ichiraku-button--secondary:hover {
+  background: linear-gradient(135deg, #a1c4e8 0%, #8fb4e0 100%);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Outline - Bordes con chakra */
+.ichiraku-button--outline {
+  background: var(--surface);
+  color: var(--primary);
+  border-color: var(--primary);
+  border-width: 2px;
+}
+
+.ichiraku-button--outline:hover {
+  background: var(--primary-light);
+  color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ghost - Transparente como humo de ramen */
+.ichiraku-button--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  box-shadow: none;
+}
+
+.ichiraku-button--ghost:hover {
+  background: var(--light-gray);
+  color: var(--text-primary);
+}
+
+/* Danger - Kyubi Red */
+.ichiraku-button--danger {
+  background: linear-gradient(135deg, var(--error-red) 0%, #ff9999 100%);
+  color: var(--text-primary);
+  border-color: var(--error-red);
+  box-shadow: var(--shadow-md);
+}
+
+.ichiraku-button--danger:hover {
+  background: linear-gradient(135deg, #ff9999 0%, #ff8080 100%);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Success - Konoha Green */
+.ichiraku-button--success {
+  background: linear-gradient(135deg, var(--success-green) 0%, #a3d9a3 100%);
+  color: var(--text-primary);
+  border-color: var(--success-green);
+  box-shadow: var(--shadow-md);
+}
+
+.ichiraku-button--success:hover {
+  background: linear-gradient(135deg, #a3d9a3 0%, #8fcc8f 100%);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Estado de loading */
+.ichiraku-button--loading {
+  position: relative;
+  color: transparent;
+}
+
+.ichiraku-button--loading .loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: currentColor;
+}
+
+/* Iconos */
+.ichiraku-button__icon {
+  flex-shrink: 0;
+}
+
+.ichiraku-button__icon--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.ichiraku-button__icon--md {
+  width: 18px;
+  height: 18px;
+}
+
+.ichiraku-button__icon--lg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Efecto especial chakra glow para botones importantes */
+.ichiraku-button--chakra-glow {
+  animation: chakraGlow 2s ease-in-out infinite;
+}
+
+/* Botón full width */
+.ichiraku-button--full {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ichiraku-button--lg {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .ichiraku-button--md {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Animación del spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ichiraku-button .loading-spinner {
+  animation: spin 1s linear infinite;
+}
