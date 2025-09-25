@@ -6,8 +6,10 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { EventosProvider } from "./context/EventosContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 import Layout from "./components/layout/Layout";
 import EventsPage from "./pages/EventsPage";
+import FavoritesPage from "./pages/FavoritesPage";
 import DevPage from "./pages/DevPage";
 import LoginForm from "./components/auth/LoginForm";
 import RegisterForm from "./components/auth/RegisterForm";
@@ -19,65 +21,75 @@ function App() {
   return (
     <AuthProvider>
       <EventosProvider>
-        <Router>
-          <Routes>
-            {/* Rutas públicas */}
-            <Route path="/" element={<Layout />}>
-              <Route index element={<EventsPage />} />
-            </Route>
+        <FavoritesProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<EventsPage />} />
+                <Route path="/favoritos" element={<FavoritesPage />} />
+                <Route path="/perfil" element={<DevPage />} />
+                <Route path="/configuracion" element={<DevPage />} />
+                <Route path="/eventos/:id" element={<DevPage />} />
+                <Route path="/dev" element={<DevPage />} />
+              </Route>
 
-            {/* Rutas de autenticación (solo para usuarios no autenticados) */}
-            <Route
-              path="/login"
-              element={
-                <PublicRoute>
-                  <LoginForm />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/registro"
-              element={
-                <PublicRoute>
-                  <RegisterForm />
-                </PublicRoute>
-              }
-            />
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <LoginForm />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/registro"
+                element={
+                  <PublicRoute>
+                    <RegisterForm />
+                  </PublicRoute>
+                }
+              />
 
-            {/* Rutas protegidas */}
-            <Route
-              path="/eventos/crear"
-              element={
-                <ProtectedRoute>
-                  <CreateEventForm />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/eventos/crear"
+                element={
+                  <ProtectedRoute>
+                    <CreateEventForm />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/favoritos"
+                element={
+                  <ProtectedRoute>
+                    <FavoritesPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Rutas en desarrollo - redirigen a DevPage */}
-            <Route
-              path="/perfil"
-              element={
-                <ProtectedRoute>
-                  <DevPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/configuracion"
-              element={
-                <ProtectedRoute>
-                  <DevPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/eventos/:id" element={<DevPage />} />
-            <Route path="/dev" element={<DevPage />} />
+              <Route
+                path="/perfil"
+                element={
+                  <ProtectedRoute>
+                    <DevPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/configuracion"
+                element={
+                  <ProtectedRoute>
+                    <DevPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/eventos/:id" element={<DevPage />} />
+              <Route path="/dev" element={<DevPage />} />
 
-            {/* Ruta por defecto */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </FavoritesProvider>
       </EventosProvider>
     </AuthProvider>
   );

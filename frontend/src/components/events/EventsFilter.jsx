@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Search,
   Filter,
@@ -11,10 +11,11 @@ import {
   Tag,
 } from "lucide-react";
 import { useEventos } from "../../context/EventosContext";
+import { useDebounce } from "../../hooks/useDebounce";
 import Button from "../common/Button";
 import Input from "../common/Input";
 
-const EventsFilter = () => {
+const EventsFilter = React.memo(() => {
   const {
     filtros,
     buscarEventos,
@@ -25,68 +26,94 @@ const EventsFilter = () => {
   const [busqueda, setBusqueda] = useState(filtros.busqueda || "");
   const [showFilters, setShowFilters] = useState(false);
 
-  // Sincronizar estado local con filtros del contexto
+  const debouncedBusqueda = useDebounce(busqueda, 500);
+
   useEffect(() => {
     setBusqueda(filtros.busqueda || "");
   }, [filtros.busqueda]);
 
-  const categorias = [
-    { value: "all", label: "Todas", emoji: "📋" },
-    { value: "conferencia", label: "Conferencia", emoji: "🎤" },
-    { value: "taller", label: "Taller", emoji: "🔧" },
-    { value: "networking", label: "Networking", emoji: "🤝" },
-    { value: "social", label: "Social", emoji: "🎉" },
-    { value: "deportivo", label: "Deportivo", emoji: "⚽" },
-    { value: "cultural", label: "Cultural", emoji: "🎭" },
-    { value: "otro", label: "Otro", emoji: "📦" },
-  ];
+  useEffect(() => {
+    if (debouncedBusqueda !== filtros.busqueda) {
+      buscarEventos(debouncedBusqueda);
+    }
+  }, [debouncedBusqueda, buscarEventos, filtros.busqueda]);
 
-  const opcionesOrden = [
-    {
-      ordenPor: "fecha",
-      orden: "asc",
-      label: "Fecha (más próxima)",
-      icon: Calendar,
+  const categorias = useMemo(
+    () => [
+      { value: "all", label: "Todas", emoji: "📋" },
+      { value: "conferencia", label: "Conferencia", emoji: "🎤" },
+      { value: "taller", label: "Taller", emoji: "🔧" },
+      { value: "networking", label: "Networking", emoji: "🤝" },
+      { value: "social", label: "Social", emoji: "🎉" },
+      { value: "deportivo", label: "Deportivo", emoji: "⚽" },
+      { value: "cultural", label: "Cultural", emoji: "🎭" },
+      { value: "otro", label: "Otro", emoji: "📦" },
+    ],
+    []
+  );
+
+  const opcionesOrden = useMemo(
+    () => [
+      {
+        ordenPor: "fecha",
+        orden: "asc",
+        label: "Fecha (más próxima)",
+        icon: Calendar,
+      },
+      {
+        ordenPor: "fecha",
+        orden: "desc",
+        label: "Fecha (más lejana)",
+        icon: Calendar,
+      },
+      { ordenPor: "titulo", orden: "asc", label: "Título (A-Z)", icon: Tag },
+      { ordenPor: "titulo", orden: "desc", label: "Título (Z-A)", icon: Tag },
+      {
+        ordenPor: "precio",
+        orden: "asc",
+        label: "Precio (menor)",
+        icon: DollarSign,
+      },
+      {
+        ordenPor: "precio",
+        orden: "desc",
+        label: "Precio (mayor)",
+        icon: TrendingUp,
+      },
+    ],
+    []
+  );
+
+  const handleBusqueda = useCallback(
+    (e) => {
+      e.preventDefault();
+      buscarEventos(busqueda);
     },
-    {
-      ordenPor: "fecha",
-      orden: "desc",
-      label: "Fecha (más lejana)",
-      icon: Calendar,
+    [buscarEventos, busqueda]
+  );
+
+  const handleCategoriaChange = useCallback(
+    (categoria) => {
+      filtrarPorCategoria(categoria);
     },
-    { ordenPor: "titulo", orden: "asc", label: "Título (A-Z)", icon: Tag },
-    { ordenPor: "titulo", orden: "desc", label: "Título (Z-A)", icon: Tag },
-    {
-      ordenPor: "precio",
-      orden: "asc",
-      label: "Precio (menor)",
-      icon: DollarSign,
+    [filtrarPorCategoria]
+  );
+
+  const handleOrdenChange = useCallback(
+    (ordenPor, orden) => {
+      ordenarEventos(ordenPor, orden);
     },
-    {
-      ordenPor: "precio",
-      orden: "desc",
-      label: "Precio (mayor)",
-      icon: TrendingUp,
-    },
-  ];
+    [ordenarEventos]
+  );
 
-  const handleBusqueda = (e) => {
-    e.preventDefault();
-    buscarEventos(busqueda);
-  };
-
-  const handleCategoriaChange = (categoria) => {
-    filtrarPorCategoria(categoria);
-  };
-
-  const handleOrdenChange = (ordenPor, orden) => {
-    ordenarEventos(ordenPor, orden);
-  };
-
-  const limpiarFiltros = () => {
+  const limpiarFiltros = useCallback(() => {
     setBusqueda("");
     limpiarFiltrosContexto();
-  };
+  }, [limpiarFiltrosContexto]);
+
+  const handleInputChange = useCallback((e) => {
+    setBusqueda(e.target.value);
+  }, []);
 
   const tienesFiltrosActivos =
     filtros.categoria !== "all" ||
@@ -116,7 +143,7 @@ const EventsFilter = () => {
               placeholder="Buscar eventos ninja por título o descripción..."
               icon={Search}
               value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
+              onChange={handleInputChange}
               size="md"
             />
           </div>
@@ -221,6 +248,8 @@ const EventsFilter = () => {
       )}
     </div>
   );
-};
+});
+
+EventsFilter.displayName = "EventsFilter";
 
 export default EventsFilter;

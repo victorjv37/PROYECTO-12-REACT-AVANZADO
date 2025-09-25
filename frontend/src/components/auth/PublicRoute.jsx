@@ -11,7 +11,6 @@ const PublicRoute = ({ children }) => {
   }
 
   if (isAuthenticated) {
-    // Si ya está autenticado, redirigir a la página de origen o al home
     const from = location.state?.from?.pathname || "/";
     return <Navigate to={from} replace />;
   }

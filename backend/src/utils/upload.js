@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuración de almacenamiento
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, "../../uploads");
@@ -18,7 +17,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// Filtro de archivos
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
   const extname = allowedTypes.test(
@@ -37,7 +35,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Configuración de multer
 export const upload = multer({
   storage: storage,
   limits: {
@@ -46,7 +43,6 @@ export const upload = multer({
   fileFilter: fileFilter,
 });
 
-// Middleware para manejar errores de multer
 export const manejarErrorMulter = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {

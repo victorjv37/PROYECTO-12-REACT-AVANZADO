@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 export const conectarBD = async () => {
   try {
-    // Usar la base de datos existente 'Eventos' (con mayúscula)
     const mongoUri =
       process.env.MONGODB_URI ||
       "mongodb+srv://victorjv37:Javier2002@cluster0.lfgne3k.mongodb.net/Eventos";
@@ -21,7 +20,6 @@ export const conectarBD = async () => {
   }
 };
 
-// Manejar eventos de conexión
 mongoose.connection.on("connected", () => {
   console.log("🔗 Mongoose conectado a MongoDB");
 });

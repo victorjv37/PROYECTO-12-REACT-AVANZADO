@@ -40,7 +40,6 @@ const CreateEventForm = ({
 
   const watchCartel = watch("cartel");
 
-  // Precargar datos del evento si es edición
   useEffect(() => {
     if (esEdicion && eventoParaEditar) {
       const fechaFormateada = new Date(eventoParaEditar.fecha)
@@ -57,7 +56,6 @@ const CreateEventForm = ({
         capacidadMaxima: eventoParaEditar.capacidadMaxima || "",
       });
 
-      // Si hay cartel existente, mostrar preview
       if (eventoParaEditar.cartel) {
         setCartelPreview(
           eventoParaEditar.cartel.startsWith("http")
@@ -68,7 +66,6 @@ const CreateEventForm = ({
     }
   }, [esEdicion, eventoParaEditar, reset]);
 
-  // Preview de imagen
   const handleCartelChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -86,14 +83,12 @@ const CreateEventForm = ({
     try {
       const formData = new FormData();
 
-      // Agregar campos de texto
       formData.append("titulo", datos.titulo.trim());
       formData.append("descripcion", datos.descripcion.trim());
       formData.append("fecha", datos.fecha);
       formData.append("ubicacion", datos.ubicacion.trim());
       formData.append("categoria", datos.categoria);
 
-      // Campos opcionales
       if (
         datos.capacidadMaxima &&
         datos.capacidadMaxima.toString().trim() !== ""
@@ -104,7 +99,6 @@ const CreateEventForm = ({
         formData.append("precio", parseFloat(datos.precio));
       }
 
-      // Cartel (archivo)
       if (datos.cartel && datos.cartel[0]) {
         formData.append("cartel", datos.cartel[0]);
       }
@@ -139,7 +133,6 @@ const CreateEventForm = ({
           `Error ${esEdicion ? "actualizando" : "creando"} evento:`,
           resultado.error
         );
-        // Manejar errores específicos
         if (resultado.error.includes("titulo")) {
           setError("titulo", { message: resultado.error });
         } else if (resultado.error.includes("fecha")) {

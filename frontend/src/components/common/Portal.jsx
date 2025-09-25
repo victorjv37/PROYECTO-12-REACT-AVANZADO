@@ -5,7 +5,6 @@ const Portal = ({ children, containerId = "modal-root" }) => {
   const [container, setContainer] = useState(null);
 
   useEffect(() => {
-    // Buscar el contenedor existente o crearlo
     let modalContainer = document.getElementById(containerId);
 
     if (!modalContainer) {
@@ -24,7 +23,6 @@ const Portal = ({ children, containerId = "modal-root" }) => {
     setContainer(modalContainer);
 
     return () => {
-      // Limpiar el contenedor si no tiene hijos al desmontar
       if (modalContainer && modalContainer.children.length === 0) {
         document.body.removeChild(modalContainer);
       }

@@ -8,7 +8,6 @@ const LoadingSpinner = ({
   variant = "rasengan", // rasengan, kunai, leaf, bars
   theme = "default", // default, ramen, ninja
 }) => {
-  // Construir clases CSS
   const containerClasses = [
     "ichiraku-loading",
     fullScreen && "ichiraku-loading--fullscreen",

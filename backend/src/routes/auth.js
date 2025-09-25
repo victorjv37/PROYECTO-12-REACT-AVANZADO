@@ -11,11 +11,9 @@ import { upload, manejarErrorMulter } from "../utils/upload.js";
 
 const router = express.Router();
 
-// Rutas públicas
 router.post("/registro", validarRegistro, registrarUsuario);
 router.post("/login", validarLogin, loginUsuario);
 
-// Rutas protegidas
 router.get("/perfil", verificarToken, obtenerPerfil);
 router.put(
   "/perfil",

@@ -18,7 +18,6 @@ const Input = forwardRef(
     },
     ref
   ) => {
-    // Construir clases CSS
     const containerClasses = ["ichiraku-input-container", containerClassName]
       .filter(Boolean)
       .join(" ");

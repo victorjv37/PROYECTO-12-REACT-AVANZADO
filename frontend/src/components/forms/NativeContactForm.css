@@ -1,0 +1,304 @@
+.native-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: var(--surface);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.native-form::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 212, 163, 0.1) 0%,
+    transparent 50%
+  );
+  animation: chakraRotate 20s linear infinite;
+  pointer-events: none;
+}
+
+.native-form__header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  position: relative;
+  z-index: 1;
+}
+
+.native-form__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.native-form__title-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+}
+
+.native-form__subtitle {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.native-form__form {
+  position: relative;
+  z-index: 1;
+}
+
+.native-form__field {
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.native-form__label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.native-form__label-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+
+.native-form__input,
+.native-form__textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: var(--background);
+  transition: all var(--transition-normal);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.native-form__input:focus,
+.native-form__textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 212, 163, 0.2);
+  background: var(--surface);
+}
+
+.native-form__input:hover,
+.native-form__textarea:hover {
+  border-color: var(--primary-light);
+}
+
+.native-form__input--error,
+.native-form__textarea--error {
+  border-color: var(--error-red);
+  background: rgba(255, 179, 179, 0.1);
+}
+
+.native-form__input--error:focus,
+.native-form__textarea--error:focus {
+  box-shadow: 0 0 0 3px rgba(255, 179, 179, 0.2);
+}
+
+.native-form__textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.native-form__character-count {
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.native-form__error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--error-red);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  animation: errorShake 0.3s ease-in-out;
+}
+
+.native-form__error-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.native-form__error--general {
+  background: rgba(255, 179, 179, 0.1);
+  border: 1px solid var(--error-red);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.native-form__actions {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+}
+
+.native-form__submit {
+  min-width: 200px;
+}
+
+.native-form__success {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: linear-gradient(
+    135deg,
+    var(--surface) 0%,
+    rgba(184, 230, 184, 0.1) 100%
+  );
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--success-green);
+  text-align: center;
+}
+
+.native-form__success-content {
+  position: relative;
+  z-index: 1;
+}
+
+.native-form__success-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-lg);
+  animation: successPulse 2s ease-in-out infinite;
+}
+
+.native-form__success h3 {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--success-green);
+  margin-bottom: var(--spacing-md);
+}
+
+.native-form__success p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+@keyframes chakraRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes errorShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes successPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .native-form {
+    margin: var(--spacing-lg);
+    padding: var(--spacing-lg);
+  }
+
+  .native-form__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .native-form__input,
+  .native-form__textarea {
+    padding: var(--spacing-sm);
+  }
+
+  .native-form__character-count {
+    bottom: -18px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .native-form {
+    margin: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .native-form__title {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-lg);
+  }
+
+  .native-form__submit {
+    min-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .native-form::before,
+  .native-form__success-icon {
+    animation: none;
+  }
+
+  .native-form__error {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .native-form__input,
+  .native-form__textarea {
+    border-width: 3px;
+  }
+
+  .native-form__input:focus,
+  .native-form__textarea:focus {
+    box-shadow: 0 0 0 4px rgba(255, 212, 163, 0.4);
+  }
+}

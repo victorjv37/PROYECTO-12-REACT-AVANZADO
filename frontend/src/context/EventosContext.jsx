@@ -75,7 +75,6 @@ export const EventosProvider = ({ children }) => {
       setLoading(true);
       const response = await eventosService.crearEvento(datosEvento);
 
-      // Actualizar lista de eventos
       await obtenerEventos();
 
       toast.success(response.message || "Evento creado exitosamente");
@@ -93,12 +92,10 @@ export const EventosProvider = ({ children }) => {
       setLoading(true);
       const response = await eventosService.actualizarEvento(id, datosEvento);
 
-      // Actualizar evento actual si es el mismo
       if (eventoActual && eventoActual._id === id) {
         setEventoActual(response.data);
       }
 
-      // Actualizar lista de eventos
       await obtenerEventos();
 
       toast.success(response.message || "Evento actualizado exitosamente");
@@ -116,7 +113,6 @@ export const EventosProvider = ({ children }) => {
       setLoading(true);
       const response = await eventosService.eliminarEvento(id);
 
-      // Actualizar lista de eventos
       await obtenerEventos();
 
       toast.success(response.message || "Evento eliminado exitosamente");
@@ -134,12 +130,10 @@ export const EventosProvider = ({ children }) => {
       setLoading(true);
       const response = await eventosService.confirmarAsistencia(id);
 
-      // Actualizar evento actual
       if (eventoActual && eventoActual._id === id) {
         setEventoActual(response.data);
       }
 
-      // Actualizar lista de eventos
       await obtenerEventos();
 
       toast.success(response.message || "Asistencia confirmada");
@@ -157,12 +151,10 @@ export const EventosProvider = ({ children }) => {
       setLoading(true);
       const response = await eventosService.cancelarAsistencia(id);
 
-      // Actualizar evento actual
       if (eventoActual && eventoActual._id === id) {
         setEventoActual(response.data);
       }
 
-      // Actualizar lista de eventos
       await obtenerEventos();
 
       toast.success(response.message || "Asistencia cancelada");

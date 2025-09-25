@@ -10,14 +10,17 @@
 @import "./components/common/Button.css";
 @import "./components/common/Input.css";
 @import "./components/common/LoadingSpinner.css";
+@import "./components/common/StarRating.css";
 @import "./components/layout/Navbar.css";
 @import "./components/events/EventCard.css";
 @import "./components/events/EventsFilter.css";
 @import "./components/events/CreateEventForm.css";
 @import "./components/auth/LoginForm.css";
+@import "./components/forms/NativeContactForm.css";
 
 /* Pages */
 @import "./pages/EventsPage.css";
+@import "./pages/FavoritesPage.css";
 
 /* Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap");
@@ -59,8 +62,65 @@
   flex-direction: column;
 }
 
-/* Clases especiales de Ichiraku's Events */
-.ichiraku-brand {
+/* Reducir tamaño de todo el contenido excepto el header navegacion */
+.contenido-aplicacion-reducido-sin-header {
+  /* Reducir tipografías y espaciados un ~10-12% */
+  font-size: 0.92rem;
+}
+
+/* Ajustes generales para componentes comunes dentro del contenido principal */
+.contenido-aplicacion-reducido-sin-header .pagina-principal-ninja-eventos {
+  padding: calc(var(--spacing-xl) * 0.8) 0;
+}
+
+.contenido-aplicacion-reducido-sin-header .seccion-contenido-ninja-eventos {
+  margin-bottom: calc(var(--spacing-3xl) * 0.8);
+}
+
+.contenido-aplicacion-reducido-sin-header .cuadricula-eventos-principales {
+  gap: calc(var(--spacing-xl) * 0.8);
+}
+
+/* Botones interactivos un poco más compactos */
+.contenido-aplicacion-reducido-sin-header .boton-ninja-interactivo {
+  padding: 0.6em 0.9em;
+  font-size: 0.92em;
+  border-radius: calc(var(--border-radius-lg) * 0.85);
+}
+
+/* Campos de entrada algo más compactos */
+.contenido-aplicacion-reducido-sin-header .campo-entrada-ninja,
+.contenido-aplicacion-reducido-sin-header .campo-entrada-ninja-textarea {
+  padding: 0.6em 0.75em;
+  font-size: 0.95em;
+}
+
+/* Tarjetas contenedoras generales */
+.contenido-aplicacion-reducido-sin-header .tarjeta-ninja-contenedora,
+.contenido-aplicacion-reducido-sin-header .tarjeta-generica,
+.contenido-aplicacion-reducido-sin-header .tarjeta-evento-individual,
+.contenido-aplicacion-reducido-sin-header .tarjeta-favorito-individual {
+  border-radius: calc(var(--border-radius-lg) * 0.9);
+}
+
+/* Títulos y textos descriptivos en tarjetas */
+.contenido-aplicacion-reducido-sin-header .titulo-tarjeta-evento,
+.contenido-aplicacion-reducido-sin-header .titulo-tarjeta-favorito {
+  font-size: calc(var(--font-size-lg) * 0.9);
+}
+
+.contenido-aplicacion-reducido-sin-header .descripcion-tarjeta-evento,
+.contenido-aplicacion-reducido-sin-header .descripcion-tarjeta-favorito {
+  font-size: calc(var(--font-size-sm) * 0.95);
+}
+
+.contenido-aplicacion-reducido-sin-header .acciones-tarjeta-evento,
+.contenido-aplicacion-reducido-sin-header .acciones-tarjeta-favorito {
+  gap: calc(var(--spacing-sm) * 0.8);
+}
+
+/* Clases especiales temáticas de eventos ninja */
+.marca-ninja-gradiente-animado {
   background: linear-gradient(
     45deg,
     var(--naruto-orange),
@@ -68,7 +128,7 @@
     var(--naruto-orange)
   );
   background-size: 200% 200%;
-  animation: brandGradient 3s ease infinite;
+  animation: animacion-gradiente-marca-ninja 3s ease infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -76,7 +136,7 @@
   font-weight: var(--font-weight-bold);
 }
 
-@keyframes brandGradient {
+@keyframes animacion-gradiente-marca-ninja {
   0% {
     background-position: 0% 50%;
   }
@@ -88,8 +148,8 @@
   }
 }
 
-/* Utilidades específicas temáticas */
-.ramen-bowl {
+/* Utilidades específicas temáticas de ramen y ninjas */
+.cuenco-ramen-circular-gradiente {
   background: radial-gradient(
     circle at center,
     var(--bowl-brown) 0%,
@@ -99,7 +159,7 @@
   border-radius: 50%;
 }
 
-.ninja-card {
+.tarjeta-ninja-con-efecto-hover {
   background: var(--surface);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
@@ -109,7 +169,7 @@
   overflow: hidden;
 }
 
-.ninja-card::before {
+.tarjeta-ninja-con-efecto-hover::before {
   content: "";
   position: absolute;
   top: 0;
@@ -125,11 +185,11 @@
   transition: left 0.5s;
 }
 
-.ninja-card:hover::before {
+.tarjeta-ninja-con-efecto-hover:hover::before {
   left: 100%;
 }
 
-.ninja-card:hover {
+.tarjeta-ninja-con-efecto-hover:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-xl);
 }
@@ -202,42 +262,42 @@
   }
 }
 
-/* Layout específico */
-.ichiraku-container {
+/* Layout específico de la aplicacion ninja */
+.contenedor-principal-ninja-eventos {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }
 
-.ichiraku-page {
+.pagina-principal-ninja-eventos {
   min-height: calc(100vh - 80px);
   padding: var(--spacing-xl) 0;
 }
 
-.ichiraku-section {
+.seccion-contenido-ninja-eventos {
   margin-bottom: var(--spacing-3xl);
 }
 
-/* Estados de hover mejorados */
-.hover-glow:hover {
+/* Estados de hover mejorados con brillo ninja */
+.efecto-brillo-ninja-hover:hover {
   box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 212, 163, 0.3);
   transform: translateY(-2px);
 }
 
-/* Animaciones de entrada */
-.fade-in {
-  animation: fadeIn 0.6s ease-out;
+/* Animaciones de entrada dinamicas */
+.animacion-aparicion-suave {
+  animation: animacion-aparicion-suave-entrada 0.6s ease-out;
 }
 
-.slide-up {
-  animation: slideUp 0.6s ease-out;
+.animacion-deslizar-hacia-arriba {
+  animation: animacion-deslizar-hacia-arriba-entrada 0.6s ease-out;
 }
 
-.scale-in {
-  animation: scaleIn 0.4s ease-out;
+.animacion-escalar-desde-centro {
+  animation: animacion-escalar-desde-centro-entrada 0.4s ease-out;
 }
 
-@keyframes fadeIn {
+@keyframes animacion-aparicion-suave-entrada {
   from {
     opacity: 0;
   }
@@ -246,7 +306,7 @@
   }
 }
 
-@keyframes slideUp {
+@keyframes animacion-deslizar-hacia-arriba-entrada {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -257,7 +317,7 @@
   }
 }
 
-@keyframes scaleIn {
+@keyframes animacion-escalar-desde-centro-entrada {
   from {
     opacity: 0;
     transform: scale(0.9);
@@ -268,38 +328,38 @@
   }
 }
 
-/* Grid especial para eventos */
-.events-grid {
+/* Cuadricula especial para mostrar eventos */
+.cuadricula-eventos-principales {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: var(--spacing-xl);
   margin: var(--spacing-xl) 0;
 }
 
-/* Media queries mejoradas */
+/* Media queries mejoradas para dispositivos responsive */
 @media (max-width: 1200px) {
-  .ichiraku-container {
+  .contenedor-principal-ninja-eventos {
     padding: 0 var(--spacing-md);
   }
 }
 
 @media (max-width: 768px) {
-  .ichiraku-page {
+  .pagina-principal-ninja-eventos {
     padding: var(--spacing-lg) 0;
   }
 
-  .events-grid {
+  .cuadricula-eventos-principales {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
   }
 }
 
 @media (max-width: 480px) {
-  .ichiraku-container {
+  .contenedor-principal-ninja-eventos {
     padding: 0 var(--spacing-sm);
   }
 
-  .ichiraku-section {
+  .seccion-contenido-ninja-eventos {
     margin-bottom: var(--spacing-xl);
   }
 }

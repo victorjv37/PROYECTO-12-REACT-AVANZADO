@@ -48,7 +48,6 @@ const usuarioSchema = new mongoose.Schema(
   }
 );
 
-// Middleware para hashear la contraseña antes de guardar
 usuarioSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -61,12 +60,10 @@ usuarioSchema.pre("save", async function (next) {
   }
 });
 
-// Método para comparar contraseñas
 usuarioSchema.methods.compararPassword = async function (passwordCandidato) {
   return await bcryptjs.compare(passwordCandidato, this.password);
 };
 
-// Método para obtener datos públicos del usuario
 usuarioSchema.methods.toJSON = function () {
   const usuario = this.toObject();
   delete usuario.password;

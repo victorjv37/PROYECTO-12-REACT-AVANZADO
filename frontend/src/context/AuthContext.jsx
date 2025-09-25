@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Verificar si hay token al cargar la aplicación
   useEffect(() => {
     const verificarAuth = async () => {
       const token = localStorage.getItem("token");
@@ -25,12 +24,10 @@ export const AuthProvider = ({ children }) => {
 
       if (token && usuarioGuardado) {
         try {
-          // Verificar que el token siga siendo válido
           const response = await authService.perfil();
           setUsuario(response.data);
           setIsAuthenticated(true);
         } catch (error) {
-          // Token inválido, limpiar localStorage
           logout();
         }
       }
@@ -47,11 +44,9 @@ export const AuthProvider = ({ children }) => {
 
       const { usuario: usuarioData, token } = response.data;
 
-      // Guardar en localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuarioData));
 
-      // Actualizar estado
       setUsuario(usuarioData);
       setIsAuthenticated(true);
 
@@ -81,12 +76,10 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Respuesta del servidor incompleta");
       }
 
-      // Guardar en localStorage (auto-login después del registro)
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuarioData));
       console.log("💾 Datos guardados en localStorage");
 
-      // Actualizar estado
       setUsuario(usuarioData);
       setIsAuthenticated(true);
       console.log("🔓 Estado de autenticación actualizado");
@@ -117,10 +110,8 @@ export const AuthProvider = ({ children }) => {
 
       const usuarioActualizado = response.data;
 
-      // Actualizar localStorage
       localStorage.setItem("usuario", JSON.stringify(usuarioActualizado));
 
-      // Actualizar estado
       setUsuario(usuarioActualizado);
 
       toast.success(response.message || "Perfil actualizado exitosamente");

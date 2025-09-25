@@ -20,7 +20,6 @@ const Button = forwardRef(
     },
     ref
   ) => {
-    // Construir las clases CSS
     const buttonClasses = [
       "ichiraku-button",
       `ichiraku-button--${variant}`,

@@ -14,11 +14,9 @@ import { upload, manejarErrorMulter } from "../utils/upload.js";
 
 const router = express.Router();
 
-// Rutas públicas
 router.get("/", obtenerEventos);
 router.get("/:id", obtenerEventoPorId);
 
-// Rutas protegidas
 router.post(
   "/",
   verificarToken,
@@ -38,7 +36,6 @@ router.put(
 
 router.delete("/:id", verificarToken, eliminarEvento);
 
-// Rutas de asistencia
 router.post("/:id/asistir", verificarToken, confirmarAsistencia);
 router.delete("/:id/asistir", verificarToken, cancelarAsistencia);
 

@@ -15,7 +15,7 @@ const Layout = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 contenido-aplicacion-reducido-sin-header">
         <Outlet />
       </main>
 

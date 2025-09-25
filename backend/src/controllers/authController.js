@@ -4,7 +4,6 @@ import { validationResult } from "express-validator";
 
 export const registrarUsuario = async (req, res) => {
   try {
-    // Verificar errores de validación
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -16,7 +15,6 @@ export const registrarUsuario = async (req, res) => {
 
     const { nombre, email, password } = req.body;
 
-    // Verificar si el usuario ya existe
     const usuarioExistente = await Usuario.findOne({ email });
     if (usuarioExistente) {
       return res.status(400).json({
@@ -25,7 +23,6 @@ export const registrarUsuario = async (req, res) => {
       });
     }
 
-    // Crear nuevo usuario
     const nuevoUsuario = new Usuario({
       nombre,
       email,
@@ -34,7 +31,6 @@ export const registrarUsuario = async (req, res) => {
 
     await nuevoUsuario.save();
 
-    // Generar token automáticamente después del registro
     const token = generarToken(nuevoUsuario._id);
 
     console.log("✅ Usuario registrado:", {
@@ -70,7 +66,6 @@ export const registrarUsuario = async (req, res) => {
 
 export const loginUsuario = async (req, res) => {
   try {
-    // Verificar errores de validación
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -82,7 +77,6 @@ export const loginUsuario = async (req, res) => {
 
     const { email, password } = req.body;
 
-    // Buscar usuario por email
     const usuario = await Usuario.findOne({ email });
     if (!usuario) {
       return res.status(401).json({
@@ -91,7 +85,6 @@ export const loginUsuario = async (req, res) => {
       });
     }
 
-    // Verificar contraseña
     const passwordValido = await usuario.compararPassword(password);
     if (!passwordValido) {
       return res.status(401).json({
@@ -100,7 +93,6 @@ export const loginUsuario = async (req, res) => {
       });
     }
 
-    // Generar token
     const token = generarToken(usuario._id);
 
     res.json({
@@ -122,7 +114,6 @@ export const loginUsuario = async (req, res) => {
 
 export const obtenerPerfil = async (req, res) => {
   try {
-    // El usuario ya está disponible en req.usuario gracias al middleware
     const usuario = await Usuario.findById(req.usuario._id)
       .populate("eventosCreados", "titulo fecha ubicacion")
       .populate("eventosAsistidos", "titulo fecha ubicacion");

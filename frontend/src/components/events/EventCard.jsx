@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import {
   Calendar,
   MapPin,
@@ -16,55 +16,87 @@ import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useEventos } from "../../context/EventosContext";
+import { useFavoritesContext } from "../../context/FavoritesContext";
 import Button from "../common/Button";
 import Card from "../common/Card";
 import EventModal from "./EventModal";
 import "./EventCard.css";
 
-const EventCard = ({ evento, onEditEvent }) => {
+const EventCard = React.memo(({ evento, onEditEvent }) => {
   const navigate = useNavigate();
   const { isAuthenticated, usuario } = useAuth();
   const { confirmarAsistencia, cancelarAsistencia, eliminarEvento, loading } =
     useEventos();
+  const { toggleFavorite, isFavorite } = useFavoritesContext();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOrigin, setModalOrigin] = useState({ x: 0, y: 0 });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const detailButtonRef = useRef(null);
 
-  const fechaFormateada = format(new Date(evento.fecha), "dd MMM", {
-    locale: es,
-  });
-  const horaFormateada = format(new Date(evento.fecha), "HH:mm", {
-    locale: es,
-  });
-  const fechaCompleta = format(new Date(evento.fecha), "PPP", { locale: es });
+  const dateInfo = useMemo(
+    () => ({
+      fechaFormateada: format(new Date(evento.fecha), "dd MMM", { locale: es }),
+      horaFormateada: format(new Date(evento.fecha), "HH:mm", { locale: es }),
+      fechaCompleta: format(new Date(evento.fecha), "PPP", { locale: es }),
+    }),
+    [evento.fecha]
+  );
 
-  const yaEstaInscrito =
-    isAuthenticated &&
-    evento.asistentes.some((asistente) => asistente._id === usuario?._id);
+  const eventState = useMemo(
+    () => ({
+      yaEstaInscrito:
+        isAuthenticated &&
+        evento.asistentes.some((asistente) => asistente._id === usuario?._id),
+      esCreador: isAuthenticated && evento.creador._id === usuario?._id,
+      estaLleno:
+        evento.capacidadMaxima &&
+        evento.asistentes.length >= evento.capacidadMaxima,
+      esFavorito: isAuthenticated && isFavorite(evento._id),
+    }),
+    [
+      isAuthenticated,
+      evento.asistentes,
+      evento.capacidadMaxima,
+      evento.creador._id,
+      evento._id,
+      usuario?._id,
+      isFavorite,
+    ]
+  );
 
-  const esCreador = isAuthenticated && evento.creador._id === usuario?._id;
+  const handleAsistencia = useCallback(
+    async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const estaLleno =
-    evento.capacidadMaxima &&
-    evento.asistentes.length >= evento.capacidadMaxima;
+      if (eventState.yaEstaInscrito) {
+        await cancelarAsistencia(evento._id);
+      } else {
+        await confirmarAsistencia(evento._id);
+      }
+    },
+    [
+      eventState.yaEstaInscrito,
+      cancelarAsistencia,
+      confirmarAsistencia,
+      evento._id,
+    ]
+  );
 
-  const handleAsistencia = async (e) => {
+  const handleFavorite = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleFavorite(evento);
+    },
+    [toggleFavorite, evento]
+  );
+
+  const handleVerDetalles = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (yaEstaInscrito) {
-      await cancelarAsistencia(evento._id);
-    } else {
-      await confirmarAsistencia(evento._id);
-    }
-  };
-
-  const handleVerDetalles = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // Calcular la posición del botón para la animación
     if (detailButtonRef.current) {
       const rect = detailButtonRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -74,42 +106,47 @@ const EventCard = ({ evento, onEditEvent }) => {
     }
 
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, []);
 
-  const handleEditEvent = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleEditEvent = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    if (onEditEvent) {
-      onEditEvent(evento);
-    }
-  };
-
-  const handleDeleteEvent = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (showDeleteConfirm) {
-      try {
-        await eliminarEvento(evento._id);
-      } catch (error) {
-        console.error("Error al eliminar evento:", error);
+      if (onEditEvent) {
+        onEditEvent(evento);
       }
-      setShowDeleteConfirm(false);
-    } else {
-      setShowDeleteConfirm(true);
-      // Auto-ocultar después de 3 segundos
-      setTimeout(() => {
-        setShowDeleteConfirm(false);
-      }, 3000);
-    }
-  };
+    },
+    [onEditEvent, evento]
+  );
 
-  const getCategoriaInfo = (categoria) => {
+  const handleDeleteEvent = useCallback(
+    async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (showDeleteConfirm) {
+        try {
+          await eliminarEvento(evento._id);
+        } catch (error) {
+          console.error("Error al eliminar evento:", error);
+        }
+        setShowDeleteConfirm(false);
+      } else {
+        setShowDeleteConfirm(true);
+        setTimeout(() => {
+          setShowDeleteConfirm(false);
+        }, 3000);
+      }
+    },
+    [showDeleteConfirm, eliminarEvento, evento._id]
+  );
+
+  const categoriaInfo = useMemo(() => {
     const categorias = {
       conferencia: { color: "blue", emoji: "🎤", label: "Conferencia" },
       taller: { color: "green", emoji: "🛠️", label: "Taller" },
@@ -119,13 +156,14 @@ const EventCard = ({ evento, onEditEvent }) => {
       cultural: { color: "indigo", emoji: "🎭", label: "Cultural" },
       otro: { color: "gray", emoji: "📅", label: "Otro" },
     };
-    return categorias[categoria] || categorias.otro;
-  };
+    return categorias[evento.categoria] || categorias.otro;
+  }, [evento.categoria]);
 
-  const categoriaInfo = getCategoriaInfo(evento.categoria);
-  const porcentajeOcupacion = evento.capacidadMaxima
-    ? (evento.asistentes.length / evento.capacidadMaxima) * 100
-    : 0;
+  const porcentajeOcupacion = useMemo(() => {
+    return evento.capacidadMaxima
+      ? (evento.asistentes.length / evento.capacidadMaxima) * 100
+      : 0;
+  }, [evento.capacidadMaxima, evento.asistentes.length]);
 
   return (
     <Card
@@ -166,8 +204,12 @@ const EventCard = ({ evento, onEditEvent }) => {
 
           {/* Fecha destacada */}
           <div className="event-card__date-badge">
-            <span className="event-card__date-day">{fechaFormateada}</span>
-            <span className="event-card__date-time">{horaFormateada}</span>
+            <span className="event-card__date-day">
+              {dateInfo.fechaFormateada}
+            </span>
+            <span className="event-card__date-time">
+              {dateInfo.horaFormateada}
+            </span>
           </div>
 
           {/* Precio */}
@@ -197,12 +239,32 @@ const EventCard = ({ evento, onEditEvent }) => {
               </span>
             </div>
 
-            {esCreador && (
-              <div className="event-card__owner-badge">
-                <Star className="event-card__owner-icon" />
-                <span>Tu evento</span>
-              </div>
-            )}
+            <div className="event-card__header-actions">
+              {isAuthenticated && (
+                <button
+                  onClick={handleFavorite}
+                  className={`event-card__favorite-btn ${
+                    eventState.esFavorito
+                      ? "event-card__favorite-btn--active"
+                      : ""
+                  }`}
+                  aria-label={
+                    eventState.esFavorito
+                      ? "Quitar de favoritos"
+                      : "Agregar a favoritos"
+                  }
+                >
+                  <Heart className="event-card__favorite-icon" />
+                </button>
+              )}
+
+              {eventState.esCreador && (
+                <div className="event-card__owner-badge">
+                  <Star className="event-card__owner-icon" />
+                  <span>Tu evento</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Título y descripción */}
@@ -215,7 +277,7 @@ const EventCard = ({ evento, onEditEvent }) => {
           <div className="event-card__details">
             <div className="event-card__detail">
               <Calendar className="event-card__detail-icon" />
-              <span>{fechaCompleta}</span>
+              <span>{dateInfo.fechaCompleta}</span>
             </div>
             <div className="event-card__detail">
               <MapPin className="event-card__detail-icon" />
@@ -260,25 +322,25 @@ const EventCard = ({ evento, onEditEvent }) => {
               Ver Detalles
             </Button>
 
-            {isAuthenticated && !esCreador && (
+            {isAuthenticated && !eventState.esCreador && (
               <Button
-                variant={yaEstaInscrito ? "secondary" : "primary"}
+                variant={eventState.yaEstaInscrito ? "secondary" : "primary"}
                 size="sm"
                 loading={loading}
-                disabled={!yaEstaInscrito && estaLleno}
+                disabled={!eventState.yaEstaInscrito && eventState.estaLleno}
                 onClick={handleAsistencia}
                 className="event-card__attend-btn"
-                chakraGlow={!yaEstaInscrito && !estaLleno}
+                chakraGlow={!eventState.yaEstaInscrito && !eventState.estaLleno}
               >
-                {yaEstaInscrito
+                {eventState.yaEstaInscrito
                   ? "✓ Inscrito"
-                  : estaLleno
+                  : eventState.estaLleno
                   ? "Completo"
                   : "Unirme"}
               </Button>
             )}
 
-            {esCreador && (
+            {eventState.esCreador && (
               <>
                 <Button
                   variant="outline"
@@ -305,12 +367,12 @@ const EventCard = ({ evento, onEditEvent }) => {
 
           {/* Indicadores de estado */}
           <div className="event-card__status">
-            {estaLleno && (
+            {eventState.estaLleno && (
               <span className="event-card__status-badge event-card__status-badge--full">
                 Completo
               </span>
             )}
-            {yaEstaInscrito && (
+            {eventState.yaEstaInscrito && (
               <span className="event-card__status-badge event-card__status-badge--joined">
                 Te has unido
               </span>
@@ -329,6 +391,8 @@ const EventCard = ({ evento, onEditEvent }) => {
       />
     </Card>
   );
-};
+});
+
+EventCard.displayName = "EventCard";
 
 export default EventCard;

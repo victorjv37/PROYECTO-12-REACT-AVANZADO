@@ -4,7 +4,6 @@ import Usuario from "../models/Usuario.js";
 import Evento from "../models/Evento.js";
 import { conectarBD } from "../config/database.js";
 
-// Datos de ejemplo para usuarios
 const usuariosEjemplo = [
   {
     nombre: "Naruto Uzumaki",
@@ -38,7 +37,6 @@ const usuariosEjemplo = [
   },
 ];
 
-// Función para generar eventos de ejemplo
 const generarEventosEjemplo = (usuarios) => {
   const categorias = [
     "conferencia",
@@ -59,7 +57,6 @@ const generarEventosEjemplo = (usuarios) => {
     "Biblioteca Ninja - Sala de Conferencias",
   ];
 
-  // URLs de imágenes temáticas para los carteles de eventos
   const cartelesNaruto = [
     "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=700&fit=crop&crop=center", // Torneo de Artes Marciales - martial arts
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=700&fit=crop&crop=center", // Conferencia Chakra - meditation/energy
@@ -131,7 +128,6 @@ const generarEventosEjemplo = (usuarios) => {
   return eventos;
 };
 
-// Función para asignar asistentes aleatorios a eventos
 const asignarAsistentesAleatorios = (eventos, usuarios) => {
   eventos.forEach((evento) => {
     const numAsistentes = Math.floor(
@@ -154,22 +150,18 @@ const asignarAsistentesAleatorios = (eventos, usuarios) => {
   });
 };
 
-// Función principal para ejecutar la semilla
 const ejecutarSemilla = async () => {
   try {
     console.log("🌱 Iniciando semilla de datos...");
     console.log("📍 Directorio actual:", process.cwd());
     console.log("🔗 Conectando a la base de datos...");
 
-    // Conectar a la base de datos
     await conectarBD();
 
-    // Limpiar datos existentes
     console.log("🧹 Limpiando datos existentes...");
     await Usuario.deleteMany({});
     await Evento.deleteMany({});
 
-    // Crear usuarios
     console.log("👥 Creando usuarios de ejemplo...");
     const usuariosCreados = [];
 
@@ -187,7 +179,6 @@ const ejecutarSemilla = async () => {
       console.log(`  ✅ Usuario creado: ${usuario.nombre} (${usuario.email})`);
     }
 
-    // Crear eventos
     console.log("📅 Creando eventos de ejemplo...");
     const eventosEjemplo = generarEventosEjemplo(usuariosCreados);
     asignarAsistentesAleatorios(eventosEjemplo, usuariosCreados);
@@ -200,7 +191,6 @@ const ejecutarSemilla = async () => {
       console.log(`  ✅ Evento creado: ${evento.titulo}`);
     }
 
-    // Actualizar usuarios con referencias a eventos
     console.log("🔗 Actualizando referencias de usuarios...");
     for (const usuario of usuariosCreados) {
       const eventosCreados = await Evento.find({ creador: usuario._id });
@@ -228,14 +218,12 @@ const ejecutarSemilla = async () => {
   } catch (error) {
     console.error("❌ Error ejecutando la semilla:", error);
   } finally {
-    // Cerrar conexión
     await mongoose.connection.close();
     console.log("🔌 Conexión a la base de datos cerrada.");
     process.exit(0);
   }
 };
 
-// Ejecutar la semilla si el archivo se ejecuta directamente
 ejecutarSemilla();
 
 export default ejecutarSemilla;

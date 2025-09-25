@@ -15,17 +15,14 @@ export const obtenerEventos = async (req, res) => {
 
     const filtros = { estado: "activo" };
 
-    // Filtrar por categoría si se proporciona
     if (categoria && categoria !== "all") {
       filtros.categoria = categoria;
     }
 
-    // Buscar por texto si se proporciona
     if (busqueda) {
       filtros.$text = { $search: busqueda };
     }
 
-    // Configurar ordenamiento
     const sortOptions = {};
     sortOptions[ordenPor] = orden === "desc" ? -1 : 1;
 
@@ -92,7 +89,6 @@ export const obtenerEventoPorId = async (req, res) => {
 
 export const crearEvento = async (req, res) => {
   try {
-    // Verificar errores de validación
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -127,12 +123,10 @@ export const crearEvento = async (req, res) => {
 
     await nuevoEvento.save();
 
-    // Agregar evento a la lista de eventos creados del usuario
     await Usuario.findByIdAndUpdate(req.usuario._id, {
       $push: { eventosCreados: nuevoEvento._id },
     });
 
-    // Poblar datos para la respuesta
     await nuevoEvento.populate("creador", "nombre email avatar");
 
     res.status(201).json({
@@ -172,7 +166,6 @@ export const actualizarEvento = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario es el creador
     if (evento.creador.toString() !== req.usuario._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -226,7 +219,6 @@ export const eliminarEvento = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario es el creador
     if (evento.creador.toString() !== req.usuario._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -236,7 +228,6 @@ export const eliminarEvento = async (req, res) => {
 
     await Evento.findByIdAndDelete(id);
 
-    // Remover evento de las listas de usuarios
     await Usuario.updateMany(
       { $or: [{ eventosCreados: id }, { eventosAsistidos: id }] },
       {
@@ -274,7 +265,6 @@ export const confirmarAsistencia = async (req, res) => {
       });
     }
 
-    // Verificar si el evento está lleno
     if (evento.estaLleno) {
       return res.status(400).json({
         success: false,
@@ -282,7 +272,6 @@ export const confirmarAsistencia = async (req, res) => {
       });
     }
 
-    // Verificar si ya está confirmado
     if (evento.asistentes.includes(usuarioId)) {
       return res.status(400).json({
         success: false,
@@ -290,11 +279,9 @@ export const confirmarAsistencia = async (req, res) => {
       });
     }
 
-    // Agregar usuario a la lista de asistentes
     evento.asistentes.push(usuarioId);
     await evento.save();
 
-    // Agregar evento a la lista de eventos asistidos del usuario
     await Usuario.findByIdAndUpdate(usuarioId, {
       $push: { eventosAsistidos: id },
     });
@@ -329,7 +316,6 @@ export const cancelarAsistencia = async (req, res) => {
       });
     }
 
-    // Verificar si está en la lista de asistentes
     if (!evento.asistentes.includes(usuarioId)) {
       return res.status(400).json({
         success: false,
@@ -337,13 +323,11 @@ export const cancelarAsistencia = async (req, res) => {
       });
     }
 
-    // Remover usuario de la lista de asistentes
     evento.asistentes = evento.asistentes.filter(
       (asistente) => asistente.toString() !== usuarioId.toString()
     );
     await evento.save();
 
-    // Remover evento de la lista de eventos asistidos del usuario
     await Usuario.findByIdAndUpdate(usuarioId, {
       $pull: { eventosAsistidos: id },
     });

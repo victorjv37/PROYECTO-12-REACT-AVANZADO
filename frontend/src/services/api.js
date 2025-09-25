@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Configuración base de axios
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "/api",
   timeout: 10000,
@@ -9,7 +8,6 @@ const api = axios.create({
   },
 });
 
-// Interceptor para agregar el token automáticamente
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -23,20 +21,17 @@ api.interceptors.request.use(
   }
 );
 
-// Interceptor para manejar respuestas y errores globalmente
 api.interceptors.response.use(
   (response) => {
     return response.data;
   },
   (error) => {
-    // Si el token expiró, limpiar localStorage y redirigir al login
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
       window.location.href = "/login";
     }
 
-    // Extraer mensaje de error más legible
     const errorMessage =
       error.response?.data?.message ||
       error.response?.data?.errors?.[0]?.msg ||
@@ -47,7 +42,6 @@ api.interceptors.response.use(
   }
 );
 
-// Función genérica para hacer peticiones API
 export const apiRequest = async (
   method,
   endpoint,
@@ -61,7 +55,6 @@ export const apiRequest = async (
       ...options,
     };
 
-    // Si hay datos y no es GET/DELETE, agregarlos
     if (data && !["GET", "DELETE"].includes(method.toUpperCase())) {
       if (data instanceof FormData) {
         config.data = data;
@@ -74,7 +67,6 @@ export const apiRequest = async (
       }
     }
 
-    // Si es GET y hay datos, agregarlos como params
     if (method.toUpperCase() === "GET" && data) {
       config.params = data;
     }
@@ -86,7 +78,6 @@ export const apiRequest = async (
   }
 };
 
-// Métodos específicos para mayor comodidad
 export const apiGet = (endpoint, params = null) =>
   apiRequest("GET", endpoint, params);
 
@@ -98,7 +89,6 @@ export const apiPut = (endpoint, data = null) =>
 
 export const apiDelete = (endpoint) => apiRequest("DELETE", endpoint);
 
-// Servicios específicos de autenticación
 export const authService = {
   registro: (datos) => apiPost("/auth/registro", datos),
   login: (datos) => apiPost("/auth/login", datos),
@@ -106,7 +96,6 @@ export const authService = {
   actualizarPerfil: (datos) => apiPut("/auth/perfil", datos),
 };
 
-// Servicios específicos de eventos
 export const eventosService = {
   obtenerEventos: (filtros = {}) => apiGet("/eventos", filtros),
   obtenerEvento: (id) => apiGet(`/eventos/${id}`),

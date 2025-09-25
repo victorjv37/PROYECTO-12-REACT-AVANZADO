@@ -145,7 +145,6 @@ const EventModal = ({
       setShowDeleteConfirm(false);
     } else {
       setShowDeleteConfirm(true);
-      // Auto-ocultar después de 3 segundos
       setTimeout(() => {
         setShowDeleteConfirm(false);
       }, 3000);

@@ -27,7 +27,6 @@ const LoginForm = () => {
       navigate("/");
     } else {
       console.log("❌ Error en login:", resultado.error);
-      // Manejar errores específicos
       if (resultado.error.includes("email")) {
         setError("email", { message: resultado.error });
       } else if (

@@ -82,23 +82,19 @@ const eventoSchema = new mongoose.Schema(
   }
 );
 
-// Índices para búsquedas eficientes
 eventoSchema.index({ fecha: 1 });
 eventoSchema.index({ categoria: 1 });
 eventoSchema.index({ creador: 1 });
 eventoSchema.index({ titulo: "text", descripcion: "text" });
 
-// Virtual para obtener el número de asistentes
 eventoSchema.virtual("numeroAsistentes").get(function () {
   return this.asistentes.length;
 });
 
-// Virtual para verificar si está lleno
 eventoSchema.virtual("estaLleno").get(function () {
   return this.capacidadMaxima && this.asistentes.length >= this.capacidadMaxima;
 });
 
-// Configurar virtuals en JSON
 eventoSchema.set("toJSON", { virtuals: true });
 eventoSchema.set("toObject", { virtuals: true });
 

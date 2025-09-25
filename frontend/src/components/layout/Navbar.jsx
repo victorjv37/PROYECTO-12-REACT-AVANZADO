@@ -9,6 +9,7 @@ import {
   X,
   Home,
   UserPlus,
+  Heart,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -19,7 +20,6 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const location = useLocation();
 
-  // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -31,7 +31,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Cerrar menús al cambiar de ruta
   useEffect(() => {
     setIsDropdownOpen(false);
     setIsMobileMenuOpen(false);
@@ -64,6 +63,12 @@ const Navbar = () => {
       public: true,
     },
     {
+      to: "/favoritos",
+      label: "Favoritos",
+      icon: Heart,
+      public: false,
+    },
+    {
       to: "/perfil",
       label: "Mi Perfil",
       icon: User,
@@ -74,7 +79,6 @@ const Navbar = () => {
   return (
     <nav className="ichiraku-navbar">
       <div className="ichiraku-navbar__container">
-        {/* Brand/Logo */}
         <Link to="/" className="ichiraku-navbar__brand">
           <div className="ichiraku-navbar__logo">🍜</div>
           <div>
@@ -87,7 +91,6 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Navegación desktop */}
         <div className="ichiraku-navbar__nav">
           {navigationLinks.map((link) => {
             if (!link.public && !isAuthenticated) return null;
@@ -110,17 +113,14 @@ const Navbar = () => {
           })}
         </div>
 
-        {/* Sección de usuario / Auth */}
         <div className="ichiraku-navbar__user">
           {isAuthenticated ? (
             <>
-              {/* Info del usuario (desktop) */}
               <div className="ichiraku-navbar__user-info">
                 <p className="ichiraku-navbar__user-name">{usuario?.nombre}</p>
                 <p className="ichiraku-navbar__user-role">Ninja de la aldea</p>
               </div>
 
-              {/* Dropdown del avatar */}
               <div className="ichiraku-navbar__dropdown" ref={dropdownRef}>
                 <button
                   className="ichiraku-navbar__avatar"
@@ -166,7 +166,6 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              {/* Links para usuarios no autenticados (desktop) */}
               <Link
                 to="/login"
                 className={`ichiraku-navbar__nav-link ${
@@ -192,7 +191,6 @@ const Navbar = () => {
             </>
           )}
 
-          {/* Botón menú móvil */}
           <button
             className="ichiraku-navbar__mobile-toggle"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -207,14 +205,12 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Menú móvil */}
         <div
           className={`ichiraku-navbar__mobile-menu ${
             isMobileMenuOpen ? "ichiraku-navbar__mobile-menu--open" : ""
           }`}
         >
           <div className="ichiraku-navbar__mobile-nav">
-            {/* Links de navegación */}
             {navigationLinks.map((link) => {
               if (!link.public && !isAuthenticated) return null;
 
@@ -235,7 +231,6 @@ const Navbar = () => {
               );
             })}
 
-            {/* Links de auth para móvil */}
             {!isAuthenticated && (
               <>
                 <Link
@@ -263,7 +258,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Opciones de usuario autenticado en móvil */}
             {isAuthenticated && (
               <>
                 <Link

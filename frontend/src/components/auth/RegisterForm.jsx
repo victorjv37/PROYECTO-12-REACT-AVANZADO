@@ -29,11 +29,9 @@ const RegisterForm = () => {
 
     if (resultado.success) {
       console.log("🎉 Registro exitoso, navegando a home...");
-      // Auto-login después del registro exitoso
       navigate("/");
     } else {
       console.log("❌ Error en registro:", resultado.error);
-      // Manejar errores específicos
       if (resultado.error.includes("email")) {
         setError("email", { message: resultado.error });
       } else if (resultado.error.includes("nombre")) {
